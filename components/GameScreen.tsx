@@ -97,7 +97,7 @@ const handleQuestionComplete = (
         </div>
               <button
         onClick={handleRestart}
-        className="mt-4 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300"
+        className="mt-4 px-6 py-3 bg-blue-600 text-white font-semibold rounded-full shadow-md hover:bg-blue-700 transition duration-300"
       >
         Tekrar Oyna
       </button>
