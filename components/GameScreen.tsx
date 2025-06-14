@@ -59,7 +59,19 @@ const handleQuestionComplete = (
   if (gameOver) {
     const color =
       totalScore < 2000 ? "red" : totalScore < 4000 ? "yellow" : "green";
+  const handleRestart = async () => {
+    const lengths = [4, 5, 6, 7, 8, 9, 10];
+    const promises = lengths.map(getRandomWord);
+    const result = await Promise.all(promises);
+    setWordList(result.filter(Boolean) as WordItem[]);
 
+    setCurrentIndex(0);
+    setTotalScore(0);
+    setCorrectAnswers(0);
+    setRevealedTotal(0);
+    setTimeLeft(140);
+    setGameOver(false);
+  };
     return (
       <div className="max-w-md mx-auto mt-16 p-8 bg-white rounded-xl shadow-lg text-center">
         <h1 className="text-3xl font-extrabold mb-6 text-gray-900">
@@ -83,6 +95,12 @@ const handleQuestionComplete = (
             ? "Fena Değil!"
             : "Harikasın!"}
         </div>
+              <button
+        onClick={handleRestart}
+        className="mt-4 px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300"
+      >
+        Tekrar Oyna
+      </button>
       </div>
     );
   }
