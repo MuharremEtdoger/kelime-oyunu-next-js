@@ -7,7 +7,7 @@ export default function Home() {
   const [started, setStarted] = useState(false);
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-[#fef6f4] text-[#7c1034]"   style={{ backgroundImage: "url('/temple.svg')", backgroundRepeat: "repeat", backgroundPosition: "center" }}
+    <div className="bg-[url('/temple.svg')] bg-repeat bg-center flex justify-center items-center min-h-screen bg-[#fef6f4] text-[#7c1034]"
 >
       {!started ? (
         <div className="text-center">
