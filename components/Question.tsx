@@ -14,23 +14,15 @@ const Question = ({ wordItem, onComplete }: QuestionProps) => {
   const [feedback, setFeedback] = useState<null | boolean>(null);
 
   useEffect(() => {
+    // Yeni soru geldiğinde tüm state'leri sıfırla
     setRevealed(Array(wordItem.word.length).fill(false));
     setGuess("");
     setIsAnswered(false);
     setScore(wordItem.word.length * 100);
     setFeedback(null);
-  }, [wordItem]);
+  }, [wordItem.word]); // sadece word değişince tetiklenmeli
 
-  // 🔽 Harfler tamamen açıldığında tahmin yapılmadıysa otomatik yanlış say
-  useEffect(() => {
-    const allRevealed = revealed.every(val => val);
-    if (allRevealed && !isAnswered) {
-      setIsAnswered(true);
-      setFeedback(false);
-      onComplete(0, revealed.length, false);
-    }
-  }, [revealed, isAnswered, onComplete]);
-
+  // Harf açma fonksiyonu
   const handleReveal = () => {
     if (isAnswered) return;
 
@@ -48,6 +40,14 @@ const Question = ({ wordItem, onComplete }: QuestionProps) => {
 
     setRevealed(updatedRevealed);
     setScore(prev => Math.max(prev - 100, 0));
+
+    // Eğer tüm harfler açılmışsa ve cevap girilmemişse otomatik yanlış say
+    const allRevealed = updatedRevealed.every(val => val);
+    if (allRevealed) {
+      setIsAnswered(true);
+      setFeedback(false);
+      onComplete(score, updatedRevealed.filter(Boolean).length, false);
+    }
   };
 
   const handleGuess = () => {
@@ -127,9 +127,7 @@ const Question = ({ wordItem, onComplete }: QuestionProps) => {
             feedback ? "text-green-400" : "text-red-400"
           } transition-opacity duration-500`}
         >
-          {feedback
-            ? "Doğru!"
-            : `Yanlış! Doğru cevap: ${wordItem.word.toUpperCase()}`}
+          {feedback ? "Doğru!" : `Yanlış! Doğru cevap: ${wordItem.word.toUpperCase()}`}
         </div>
       )}
 
