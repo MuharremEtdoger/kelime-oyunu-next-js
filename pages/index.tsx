@@ -1,5 +1,3 @@
-import '@/styles/globals.css';
-
 import { useState } from "react";
 import GameScreen from "../components/GameScreen";
 
