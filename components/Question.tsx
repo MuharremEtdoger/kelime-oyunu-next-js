@@ -14,15 +14,13 @@ const Question = ({ wordItem, onComplete }: QuestionProps) => {
   const [feedback, setFeedback] = useState<null | boolean>(null);
 
   useEffect(() => {
-    // Yeni soru geldiğinde tüm state'leri sıfırla
     setRevealed(Array(wordItem.word.length).fill(false));
     setGuess("");
     setIsAnswered(false);
     setScore(wordItem.word.length * 100);
     setFeedback(null);
-  }, [wordItem.word]); // sadece word değişince tetiklenmeli
+  }, [wordItem.word]); // sadece kelime değişince tetiklenir
 
-  // Harf açma fonksiyonu
   const handleReveal = () => {
     if (isAnswered) return;
 
@@ -41,19 +39,23 @@ const Question = ({ wordItem, onComplete }: QuestionProps) => {
     setRevealed(updatedRevealed);
     setScore(prev => Math.max(prev - 100, 0));
 
-    // Eğer tüm harfler açılmışsa ve cevap girilmemişse otomatik yanlış say
-    const allRevealed = updatedRevealed.every(val => val);
-    if (allRevealed) {
-      setIsAnswered(true);
-      setFeedback(false);
-      onComplete(score, updatedRevealed.filter(Boolean).length, false);
+    // Tüm harfler açıldıysa otomatik geç
+    if (updatedRevealed.every(val => val)) {
+      setTimeout(() => {
+        setIsAnswered(true);
+        setFeedback(false);
+        onComplete(score, updatedRevealed.filter(Boolean).length, false);
+      }, 500);
     }
   };
 
   const handleGuess = () => {
     if (isAnswered) return;
 
-    const isCorrect = guess.trim().toLowerCase() === wordItem.word.toLowerCase();
+    const isCorrect =
+      guess.trim().toLocaleLowerCase("tr") ===
+      wordItem.word.toLocaleLowerCase("tr");
+
     setIsAnswered(true);
     setFeedback(isCorrect);
 
@@ -63,21 +65,25 @@ const Question = ({ wordItem, onComplete }: QuestionProps) => {
 
   return (
     <div className="text-center">
-      <h2 className="text-2xl font-semibold mb-6 text-gray-100">{wordItem.definition}</h2>
+      <h2 className="text-2xl font-semibold mb-6 text-gray-100">
+        {wordItem.definition}
+      </h2>
 
       <div className="flex justify-center gap-3 mb-6">
         {wordItem.word.split("").map((char, idx) => (
           <span
             key={idx}
             className={`w-12 h-12 border-2 rounded-md flex items-center justify-center text-3xl font-mono select-none
-            ${
-              revealed[idx] || isAnswered
-                ? "border-green-400 text-green-300"
-                : "border-white-500 text-white-400"
-            }
+              ${
+                revealed[idx] || isAnswered
+                  ? "border-green-400 text-green-300"
+                  : "border-white-500 text-white-400"
+              }
             `}
           >
-            {revealed[idx] || isAnswered ? char.toUpperCase() : "_"}
+            {revealed[idx] || isAnswered
+              ? char.toLocaleUpperCase("tr")
+              : "_"}
           </span>
         ))}
       </div>
@@ -127,7 +133,9 @@ const Question = ({ wordItem, onComplete }: QuestionProps) => {
             feedback ? "text-green-400" : "text-red-400"
           } transition-opacity duration-500`}
         >
-          {feedback ? "Doğru!" : `Yanlış! Doğru cevap: ${wordItem.word.toUpperCase()}`}
+          {feedback
+            ? "Doğru!"
+            : `Yanlış! Doğru cevap: ${wordItem.word.toLocaleUpperCase("tr")}`}
         </div>
       )}
 
