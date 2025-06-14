@@ -21,6 +21,16 @@ const Question = ({ wordItem, onComplete }: QuestionProps) => {
     setFeedback(null);
   }, [wordItem]);
 
+  // 🔽 Harfler tamamen açıldığında tahmin yapılmadıysa otomatik yanlış say
+  useEffect(() => {
+    const allRevealed = revealed.every(val => val);
+    if (allRevealed && !isAnswered) {
+      setIsAnswered(true);
+      setFeedback(false);
+      onComplete(0, revealed.length, false);
+    }
+  }, [revealed, isAnswered, onComplete]);
+
   const handleReveal = () => {
     if (isAnswered) return;
 
@@ -114,12 +124,12 @@ const Question = ({ wordItem, onComplete }: QuestionProps) => {
       {isAnswered && (
         <div
           className={`text-lg font-semibold ${
-            feedback
-              ? "text-green-400"
-              : "text-red-400"
+            feedback ? "text-green-400" : "text-red-400"
           } transition-opacity duration-500`}
         >
-          {feedback ? "Doğru!" : `Yanlış! Doğru cevap: ${wordItem.word.toUpperCase()}`}
+          {feedback
+            ? "Doğru!"
+            : `Yanlış! Doğru cevap: ${wordItem.word.toUpperCase()}`}
         </div>
       )}
 
